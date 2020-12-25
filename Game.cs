@@ -11,7 +11,7 @@ namespace RPS
         public int ComputerChoice { get; set; }
         public int UserChoice { get; set; }
 
-        public string[] Moves { get; set; }
+        private string[] Moves { get; set; }
 
         public Game(string[] moves)
         {
@@ -24,8 +24,8 @@ namespace RPS
         }
         public void ComputerMove()
         {
-            const int size = 128 / 8;
-            ComputerChoice = RandomNumberGenerator.GetInt32(1, Moves.Length + 1);
+            const int size = 16;
+            ComputerChoice = RandomNumberGenerator.GetInt32(0, Moves.Length);
             Key = Crypto.CreateKey(size);
             Hmac = Crypto.GetHmac(Key, Moves[ComputerChoice]);
         }
@@ -38,9 +38,8 @@ namespace RPS
             {
                 ShowMenu();
             } while (!int.TryParse(Console.ReadLine(),out move));
-
-            UserChoice = move;
-            if (UserChoice == 0) { Environment.Exit(0); }
+            if (move == 0) { Environment.Exit(0); }
+            UserChoice = move - 1;
         }
 
         public void ProcessMoves()
@@ -68,7 +67,7 @@ namespace RPS
             Console.Write("Enter your move: ");
         }
 
-        public bool CheckInput()
+        private bool CheckInput()
         {
             if (Moves.Length < 3)
             {
